@@ -1,5 +1,6 @@
 package com.Library.controller;
 
+import com.Library.entity.Author;
 import com.Library.entity.Book;
 import com.Library.service.AuthorService;
 import com.Library.service.BookService;
@@ -18,8 +19,13 @@ public class BookController {
 
     @GetMapping
     public String listBooks(Model model) {
-        model.addAttribute("books", bookService.getAllBooks());
-        return "books/list";
+        try {
+            model.addAttribute("books", bookService.getAllBooks());
+            return "books/list";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "error";
+        }
     }
 
     @GetMapping("/new")
@@ -31,15 +37,29 @@ public class BookController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("book", bookService.getBookById(id));
+        Book book = bookService.getBookById(id);
+        model.addAttribute("book", book);
         model.addAttribute("authors", authorService.getAllAuthors());
         return "books/form";
     }
 
     @PostMapping("/save")
-    public String saveBook(@ModelAttribute Book book) {
-        bookService.saveBook(book);
-        return "redirect:/books";
+    public String saveBook(@ModelAttribute Book book,
+                           @RequestParam Long authorId,
+                           Model model) {
+
+        try {
+            Author author = authorService.getAuthorById(authorId);
+            book.setAuthor(author);
+
+            bookService.saveBook(book);
+            return "redirect:/books";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "Error saving book: " + e.getMessage());
+            model.addAttribute("authors", authorService.getAllAuthors());
+            return "books/form";
+        }
     }
 
     @GetMapping("/delete/{id}")

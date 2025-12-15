@@ -22,13 +22,13 @@ public class AuthorController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("authors", new Author());
+        model.addAttribute("author", new Author());
         return "authors/form";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("authors", authorService.getAuthorById(id));
+        model.addAttribute("author", authorService.getAuthorById(id));
         return "authors/form";
     }
 

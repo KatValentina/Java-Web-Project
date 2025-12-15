@@ -1,7 +1,9 @@
 package com.Library.service;
 
 import com.Library.entity.Book;
+import com.Library.entity.Author;
 import com.Library.repository.BookRepository;
+import com.Library.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;  // Добавьте
 
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
@@ -39,6 +42,15 @@ public class BookService {
 
     public List<Book> getBooksByAuthor(Long authorId) {
         return bookRepository.findByAuthorId(authorId);
+    }
+
+    // Сохранение книги с автором
+    @Transactional
+    public Book saveBookWithAuthor(Book book, Long authorId) {
+        Author author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new RuntimeException("Author not found with id: " + authorId));
+        book.setAuthor(author);
+        return bookRepository.save(book);
     }
 
     public long countBooks() {

@@ -13,24 +13,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "books")
 public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    @Column(name = "nationality")
     private String nationality;
 
-    @Column(length = 2000)
+    @Column(name = "biography", length = 2000)
     private String biography;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -52,5 +54,16 @@ public class Author {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDate.now();
+    }
+
+    // Вспомогательный метод
+    public void addBook(Book book) {
+        books.add(book);
+        book.setAuthor(this);
+    }
+
+    public void removeBook(Book book) {
+        books.remove(book);
+        book.setAuthor(null);
     }
 }

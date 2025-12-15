@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "book")
 public class BookCopy {
 
     @Id
@@ -61,15 +62,6 @@ public class BookCopy {
 
     @PrePersist
     protected void onCreate() {
-        if (inventoryNumber == null) {
-            inventoryNumber = generateInventoryNumber();
-        }
-        if (status == null) {
-            status = "AVAILABLE";
-        }
-        if (condition == null) {
-            condition = "GOOD";
-        }
         createdAt = LocalDate.now();
         updatedAt = LocalDate.now();
     }
@@ -77,9 +69,5 @@ public class BookCopy {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDate.now();
-    }
-
-    private String generateInventoryNumber() {
-        return "LIB-" + System.currentTimeMillis();
     }
 }

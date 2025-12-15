@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Copies List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">📚 Library System</a>
+        <div class="navbar-nav">
+            <a class="nav-link" th:href="@{/authors}">Authors</a>
+            <a class="nav-link" th:href="@{/books}">Books</a>
+            <a class="nav-link active" th:href="@{/copies}">Book Copies</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Book Copies List</h2>
+        <a th:href="@{/copies/new}" class="btn btn-info">+ Add New Copy</a>
+    </div>
+
+    <!-- Copies Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Inventory #</th>
+                <th>Book</th>
+                <th>Status</th>
+                <th>Condition</th>
+                <th>Borrower</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="copy : ${copies}">
+                <td th:text="${copy.id}">1</td>
+                <td th:text="${copy.inventoryNumber}">INV-001</td>
+                <td th:text="${copy.book.title}">Book Title</td>
+                <td>
+                            <span th:class="${copy.status == 'AVAILABLE'} ? 'badge bg-success' :
+                                          ${copy.status == 'BORROWED'} ? 'badge bg-warning' :
+                                          'badge bg-secondary'"
+                                  th:text="${copy.status}">
+                                Status
+                            </span>
+                </td>
+                <td th:text="${copy.condition}">GOOD</td>
+                <td th:text="${copy.borrowerName}">-</td>
+                <td th:text="${copy.dueDate}">-</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a th:href="@{/copies/edit/{id}(id=${copy.id})}"
+                           class="btn btn-warning">Edit</a>
+                        <a th:if="${copy.status == 'AVAILABLE'}"
+                           th:href="@{/copies/borrow/{id}(id=${copy.id})}"
+                           class="btn btn-primary">Borrow</a>
+                        <a th:if="${copy.status == 'BORROWED'}"
+                           th:href="@{/copies/return/{id}(id=${copy.id})}"
+                           class="btn btn-success">Return</a>
+                        <a th:href="@{/copies/delete/{id}(id=${copy.id})}"
+                           class="btn btn-danger"
+                           onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${copies.empty}">
+                <td colspan="8" class="text-center text-muted">
+                    No copies found. <a th:href="@{/copies/new}">Add the first copy</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a th:href="@{/}" class="btn btn-secondary">Back to Home</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

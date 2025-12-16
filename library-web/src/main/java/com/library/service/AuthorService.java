@@ -58,8 +58,8 @@ public class AuthorService {
     }
 
     //поиск авторов по национальности
-    public List<Author> searchByNationality(String national) {
-        return authorRepository.findByNational(national);
+    public List<Author> searchByNationality(String nationality) {
+        return authorRepository.findByNationality(nationality);
     }
 
     //получить количество авторов

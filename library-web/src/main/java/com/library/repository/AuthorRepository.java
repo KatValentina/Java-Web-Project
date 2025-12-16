@@ -14,5 +14,6 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     List<Author> findByName(String name);
 
     //поиск по национальности
-    List<Author> findByNational(String national);
+    List<Author> findByNationality(String nationality);
 }
+

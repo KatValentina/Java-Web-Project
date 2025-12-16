@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString(includeFieldNames = true)// выводим всю информацию об авторе (id="...", name="...")
 @Entity //указывает, что класс представляет собой сущность базы данных.
-@Table(name = "author") //имя таблицы в базе, с которой будет связан данный класс
+@Table(name = "author")//имя таблицы в базе, с которой будет связан данный класс
 public class Author {
     @Id //на поле, которое является первичным ключом сущности в базе данных.
     @GeneratedValue(strategy = GenerationType.IDENTITY)//ключ будет генерироваться автоматически базой данных.
@@ -38,3 +38,4 @@ public class Author {
     private String biography;
 
 }
+

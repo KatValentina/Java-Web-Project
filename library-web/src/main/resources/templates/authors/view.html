@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр автора</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <h1>Информация об авторе</h1>
+    </header>
+
+    <div class="author-details">
+
+        <p><strong>ID:</strong> <span th:text="${author.id}"></span></p>
+        <p><strong>Имя:</strong> <span th:text="${author.name}"></span></p>
+        <p><strong>Дата рождения:</strong> <span th:text="${author.birthDate}"></span></p>
+        <p><strong>Национальность:</strong> <span th:text="${author.nationality}"></span></p>
+        <p><strong>Биография:</strong> <span th:text="${author.biography}"></span></p>
+
+    </div>
+
+    <div class="actions">
+        <a th:href="@{/authors}" class="btn btn-secondary">Назад</a>
+        <a th:href="@{/authors/edit/{id}(id=${author.id})}" class="btn btn-primary">Редактировать</a>
+    </div>
+
+</div>
+</body>
+</html>

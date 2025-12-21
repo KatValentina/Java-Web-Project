@@ -20,7 +20,7 @@ import java.util.List;
 public class AuthorController {
     private final AuthorService authorService;
 
-    @Autowired //автоматически внедрять зависимости (бины) в классы
+    @Autowired //автоматически внедрять зависимости в классы
     public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
@@ -150,46 +150,6 @@ public class AuthorController {
 
         model.addAttribute("author", author);
         return "authors/view";
-    }
-
-    // поиск авторов
-    @GetMapping("/search")
-    public String searchAuthors(@RequestParam(required = false) String searchType,
-                                @RequestParam(required = false) String searchQuery,
-                                Model model) {
-
-        List<Author> authors;
-
-        // Если строка поиска пустая — показываем всех авторов
-        if (searchQuery == null || searchQuery.trim().isEmpty()) {
-            authors = authorService.getAllAuthors();
-        } else {
-            // Определяем тип поиска (по умолчанию — по имени)
-            String type = (searchType != null) ? searchType : "name";
-
-            switch (type) {
-                case "name":
-                    authors = authorService.searchByName(searchQuery);
-                    break;
-
-                case "nationality":
-                    authors = authorService.searchByNationality(searchQuery);
-                    break;
-
-                default:
-                    // если searchType неизвестен — ищем по имени
-                    authors = authorService.searchByName(searchQuery);
-                    break;
-            }
-        }
-
-        // Передаём данные в шаблон
-        model.addAttribute("authors", authors);
-        model.addAttribute("authorCount", authors.size());
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("searchQuery", searchQuery);
-
-        return "authors/list";
     }
 
 }

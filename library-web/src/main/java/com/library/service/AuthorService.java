@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional //метод или класс должен выполняться внутри транзакции.
 public class AuthorService {
     private final AuthorRepository authorRepository;
 
@@ -50,16 +50,6 @@ public class AuthorService {
     //удаляем автора
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
-    }
-
-    // поиск авторов по имени
-    public List<Author> searchByName(String name) {
-        return authorRepository.findByName(name);
-    }
-
-    //поиск авторов по национальности
-    public List<Author> searchByNationality(String nationality) {
-        return authorRepository.findByNationality(nationality);
     }
 
     //получить количество авторов

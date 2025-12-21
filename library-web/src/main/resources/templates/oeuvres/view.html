@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Просмотр произведения</title>
+</head>
+<body>
+
+<h1>Информация о произведении</h1>
+
+<p><strong>ID:</strong> <span th:text="${oeuvre.id}"></span></p>
+<p><strong>Название:</strong> <span th:text="${oeuvre.title}"></span></p>
+<p><strong>Жанр:</strong> <span th:text="${oeuvre.genre}"></span></p>
+<p><strong>Год публикации:</strong> <span th:text="${oeuvre.publishedYear}"></span></p>
+<p><strong>Автор:</strong> <span th:text="${oeuvre.author.name}"></span></p>
+
+<br>
+
+<a th:href="@{'/oeuvres/edit/' + ${oeuvre.id}}">Редактировать</a> |
+<a th:href="@{'/oeuvres/delete/' + ${oeuvre.id}}"
+   onclick="return confirm('Удалить произведение?')">Удалить</a> |
+<a href="/oeuvres">Назад</a>
+
+</body>
+</html>

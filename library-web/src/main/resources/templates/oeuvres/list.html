@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список произведений</title>
+</head>
+<body>
+
+<h1>Произведения</h1>
+
+<a href="/oeuvres/new">Добавить новое произведение</a>
+
+<div th:if="${successMessage}" style="color: green;">
+    <p th:text="${successMessage}"></p>
+</div>
+
+<div th:if="${errorMessage}" style="color: red;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Жанр</th>
+        <th>Год</th>
+        <th>Автор</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="oeuvre : ${oeuvres}">
+        <td th:text="${oeuvre.id}"></td>
+        <td th:text="${oeuvre.title}"></td>
+        <td th:text="${oeuvre.genre}"></td>
+        <td th:text="${oeuvre.publishedYear}"></td>
+        <td th:text="${oeuvre.author.name}"></td>
+
+        <td>
+            <a th:href="@{'/oeuvres/view/' + ${oeuvre.id}}">Просмотр</a> |
+            <a th:href="@{'/oeuvres/edit/' + ${oeuvre.id}}">Редактировать</a> |
+            <a th:href="@{'/oeuvres/delete/' + ${oeuvre.id}}"
+               onclick="return confirm('Удалить произведение?')">Удалить</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

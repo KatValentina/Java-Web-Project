@@ -12,98 +12,125 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-//Controller (Контроллер) обрабатывает запрос пользователя,
-// создаёт соответствующую Модель и передаёт её для отображения в Вид.
-
+/**
+ * Контроллер для управления авторами.
+ * Обрабатывает запросы, связанные с отображением списка авторов,
+ * созданием, редактированием, удалением и просмотром деталей автора.
+ */
 @Controller
-@RequestMapping("/authors")// указывает, по какому пути будет находиться определённый ресурс или выполняться логика.
+@RequestMapping("/authors")
 public class AuthorController {
+
     private final AuthorService authorService;
 
-    @Autowired //автоматически внедрять зависимости в классы
+    /**
+     * Конструктор контроллера с внедрением зависимости AuthorService.
+     *
+     * @param authorService сервис для работы с авторами
+     */
+    @Autowired
     public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
 
-    // главная страница - список всех aвторов
-    @GetMapping //предназначенная для обработки HTTP-запросов типа GET.
+    /**
+     * Отображает список всех авторов.
+     *
+     * @param model модель для передачи данных в представление
+     * @return HTML‑страница со списком авторов
+     */
+    @GetMapping
     public String listAuthors(Model model) {
         List<Author> authors = authorService.getAllAuthors();
         model.addAttribute("authors", authors);
         model.addAttribute("authorCount", authors.size());
-        return "authors/list";//Отрендерить страницу authors/list.html и передать туда данные
-        //Метод addAttribute используется для передачи данных
-        // между представлением и контроллером приложения Spring MVC.
-
-        //Model — компонент архитектуры Model-View-Controller
-        // (Модель — Отображение — Контроллер).
-        // Задача модели — хранить данные, которые передаются от
-        // контроллера к представлению. Основная задача —
-        // быть «контейнером» данных
+        return "authors/list";
     }
 
-    //страница добавления нового автора
+    /**
+     * Отображает форму создания нового автора.
+     *
+     * @param model модель для передачи данных в представление
+     * @return HTML‑страница с формой создания автора
+     */
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         model.addAttribute("author", new Author());
         model.addAttribute("action", "create");
-        return "authors/form";//Отрендерить страницу author/form.html и передать туда данные
+        return "authors/form";
     }
 
-    //обработка создания нового автора
+    /**
+     * Обрабатывает отправку формы создания автора.
+     *
+     * @param author              объект автора, заполненный из формы
+     * @param result              ошибки валидации
+     * @param redirectAttributes  атрибуты для передачи сообщений после редиректа
+     * @param model               модель для передачи данных в представление
+     * @return перенаправление на список авторов или возврат формы при ошибках
+     */
     @PostMapping
     public String createAuthor(@Valid @ModelAttribute("author") Author author,
                                BindingResult result,
                                RedirectAttributes redirectAttributes,
                                Model model) {
-        //@Valid - проверяем объект автор на правила валидации(например поле имя не пустое)
-        //@ModelAttribute("author") Author author - Возьми данные из формы (HTML form),
-        // создай объект Author и положи его в переменную author. author - это ключ,
-        // под которым объект будет доступен в шаблоне.
-        //BindingResult result - объект, который хранит ошибки валидации.
-        //RedirectAttributes - используют для сообщений об успехе.
 
-        if (result.hasErrors()) { //“Есть ли ошибки валидации?”
-            model.addAttribute("action", "create"); //если есть ошибка,
-            //Передаём в модель переменную "action" со значением "create". Форма используется для создания
-            return "authors/form";//показываем форму с заполнением данных об авторе, но с ошибкой
+        if (result.hasErrors()) {
+            model.addAttribute("action", "create");
+            return "authors/form";
         }
 
-        authorService.saveAuthor(author);//Сохраняем автора в базе данных.
-        //Flash‑атрибут — это сообщение, которое живёт один redirect.
+        authorService.saveAuthor(author);
         redirectAttributes.addFlashAttribute("successMessage",
-                "Автор "+ author.getName()+" успешно добавлен");
-        return "redirect:/authors"; //после создания автора переводим на страницу с авторами
+                "Автор " + author.getName() + " успешно добавлен");
+        return "redirect:/authors";
     }
 
-    //страница с редактированием автора
+    /**
+     * Отображает форму редактирования автора.
+     *
+     * @param id                 идентификатор автора
+     * @param model              модель для передачи данных в представление
+     * @param redirectAttributes атрибуты для сообщений после редиректа
+     * @return HTML‑страница с формой редактирования или редирект при ошибке
+     */
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
-        //@PathVariable("id") - “Возьми число из URL и положи его в переменную id”.
-        Author author = authorService.getAuthorsById(id)
-                .orElse(null);
+    public String showEditForm(@PathVariable("id") Long id,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+
+        Author author = authorService.getAuthorsById(id).orElse(null);
 
         if (author == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Автор не найден");
-            return "redirect:/authors";//вернулись на страницу с авторами
+            return "redirect:/authors";
         }
 
-        model.addAttribute("author", author);//Передаём объект автора в HTML‑форму.
-        //Форма сможет заполнить поля:
-        model.addAttribute("action", "edit");//Передаём в шаблон информацию, что это режим редактирования, а не создания.
-        return "authors/form";//Показать форму редактирования автора
+        model.addAttribute("author", author);
+        model.addAttribute("action", "edit");
+        return "authors/form";
     }
 
-    //обработка обновления автора
+    /**
+     * Обрабатывает обновление данных автора.
+     *
+     * @param id                 идентификатор автора
+     * @param author             объект автора из формы
+     * @param result             ошибки валидации
+     * @param redirectAttributes атрибуты для сообщений после редиректа
+     * @param model              модель для передачи данных в представление
+     * @return перенаправление на список авторов или возврат формы при ошибках
+     */
     @PostMapping("/update/{id}")
-    public String updateAuthor(@PathVariable("id") Long id,@Valid @ModelAttribute("author") Author author,
-                              BindingResult result,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
-        if (result.hasErrors()) { //“Есть ли ошибки валидации?”
+    public String updateAuthor(@PathVariable("id") Long id,
+                               @Valid @ModelAttribute("author") Author author,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+
+        if (result.hasErrors()) {
             model.addAttribute("action", "edit");
-            author.setId(id);//Мы вручную возвращаем id автору,
-            // чтобы форма знала, какой объект редактируется
+            author.setId(id);
             return "authors/form";
         }
 
@@ -118,11 +145,20 @@ public class AuthorController {
         return "redirect:/authors";
     }
 
-    // удаление автора
+    /**
+     * Удаляет автора по идентификатору.
+     *
+     * @param id                 идентификатор автора
+     * @param redirectAttributes атрибуты для сообщений после редиректа
+     * @return перенаправление на список авторов
+     */
     @GetMapping("/delete/{id}")
-    public String deleteAuthor(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    public String deleteAuthor(@PathVariable("id") Long id,
+                               RedirectAttributes redirectAttributes) {
+
         try {
             Author author = authorService.getAuthorsById(id).orElse(null);
+
             if (author != null) {
                 authorService.deleteAuthor(id);
                 redirectAttributes.addFlashAttribute("successMessage",
@@ -130,6 +166,7 @@ public class AuthorController {
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "Автор не найден");
             }
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Ошибка при удалении автора: " + e.getMessage());
@@ -138,9 +175,19 @@ public class AuthorController {
         return "redirect:/authors";
     }
 
-    // просмотр деталей автора
+    /**
+     * Отображает страницу с подробной информацией об авторе.
+     *
+     * @param id                 идентификатор автора
+     * @param model              модель для передачи данных в представление
+     * @param redirectAttributes атрибуты для сообщений после редиректа
+     * @return HTML‑страница с деталями автора или редирект при ошибке
+     */
     @GetMapping("/view/{id}")
-    public String viewAuthor(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String viewAuthor(@PathVariable("id") Long id,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+
         Author author = authorService.getAuthorsById(id).orElse(null);
 
         if (author == null) {
@@ -151,6 +198,4 @@ public class AuthorController {
         model.addAttribute("author", author);
         return "authors/view";
     }
-
 }
-

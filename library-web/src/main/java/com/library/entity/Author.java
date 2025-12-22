@@ -10,21 +10,38 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter //Lombok автоматически сгенерирует для Java байт-код, который при сборке
-@Setter //в файлы .class, вставляет необходимые для реализации желаемого поведения
+/**
+ * Сущность, представляющая автора литературных произведений.
+ * Содержит основную информацию об авторе, а также связь с его произведениями.
+ */
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(includeFieldNames = true)// выводим всю информацию об авторе (id="...", name="...")
-@Entity //указывает, что класс представляет собой сущность базы данных.
-@Table(name = "author")//имя таблицы в базе, с которой будет связан данный класс
+@ToString(includeFieldNames = true)
+@Entity
+@Table(name = "author")
 @Builder
 public class Author {
-    @Id //на поле, которое является первичным ключом сущности в базе данных.
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//ключ будет генерироваться автоматически базой данных.
+
+    /**
+     * Уникальный идентификатор автора.
+     * Генерируется автоматически базой данных.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Полное имя автора.
+     * Требования:
+     * - не пустое;
+     * - длина от 4 до 150 символов;
+     * - только буквы (латиница или кириллица);
+     * - допускается один пробел между словами.
+     */
     @NotBlank(message = "Имя автора не может быть пустым")
-    @Size(min = 4,max=150, message = "Имя автора должно содержать от 4 до 150 символов")
+    @Size(min = 4, max = 150, message = "Имя автора должно содержать от 4 до 150 символов")
     @Pattern(
             regexp = "^[A-Za-zА-Яа-яЁё]+(?: [A-Za-zА-Яа-яЁё]+)*$",
             message = "Имя может содержать только буквы и один пробел между словами"
@@ -32,31 +49,56 @@ public class Author {
     @Column(name = "name", nullable = false, length = 150)
     private String name;
 
-    @Past(message = "Дата рождения не должна быть не сегодняшним числом")
+    /**
+     * Дата рождения автора.
+     * Должна быть в прошлом.
+     */
+    @Past(message = "Дата рождения должна быть в прошлом")
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
+    /**
+     * Национальность автора.
+     * Максимальная длина — 150 символов.
+     */
     @Column(name = "nationality")
-    @Size(max=150, message = "Не должна содержать 150 символов")
+    @Size(max = 150, message = "Национальность не должна превышать 150 символов")
     private String nationality;
 
+    /**
+     * Краткая биография автора.
+     * Максимальная длина — 500 символов.
+     */
     @Size(max = 500, message = "Биография не должна превышать 500 символов")
     @Column(name = "biography", length = 500)
     private String biography;
 
-    // Автор - Произведения
+    /**
+     * Список произведений, написанных автором.
+     * Связь один-ко-многим.
+     * orphanRemoval = true — удаляет произведения, если они больше не связаны с автором.
+     */
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Oeuvre> oeuvres = new ArrayList<>();
 
+    /**
+     * Добавляет произведение автору и устанавливает связь в обе стороны.
+     *
+     * @param oeuvre произведение, которое нужно добавить
+     */
     public void addOeuvre(Oeuvre oeuvre) {
-        oeuvres.add(oeuvre);//добавляем произведение в список произведений автора
-        oeuvre.setAuthor(this); //Устанавливает у книги ссылку на этого автора.
+        oeuvres.add(oeuvre);
+        oeuvre.setAuthor(this);
     }
 
+    /**
+     * Удаляет произведение у автора и разрывает связь.
+     *
+     * @param oeuvre произведение, которое нужно удалить
+     */
     public void removeOeuvre(Oeuvre oeuvre) {
-        oeuvres.remove(oeuvre);//Удаляет книгу из списка книг автора.
-        oeuvre.setAuthor(null);//Убирает у книги ссылку на автора (author = null).
+        oeuvres.remove(oeuvre);
+        oeuvre.setAuthor(null);
     }
 }
-

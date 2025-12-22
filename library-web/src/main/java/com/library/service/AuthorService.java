@@ -9,35 +9,69 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Сервисный слой для работы с сущностью {@link Author}.
+ * Содержит бизнес‑логику, связанную с получением, созданием,
+ * обновлением и удалением авторов.
+ *
+ * Все методы выполняются в рамках транзакции.
+ */
 @Service
-@Transactional //метод или класс должен выполняться внутри транзакции.
+@Transactional
 public class AuthorService {
+
     private final AuthorRepository authorRepository;
 
-    @Autowired //
+    /**
+     * Конструктор сервиса с внедрением зависимости репозитория авторов.
+     *
+     * @param authorRepository репозиторий для работы с авторами
+     */
+    @Autowired
     public AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
-    // получаем всех авторов
+    /**
+     * Возвращает список всех авторов.
+     *
+     * @return список авторов
+     */
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
     }
 
-    //получаем авторов по id
+    /**
+     * Ищет автора по идентификатору.
+     *
+     * @param id идентификатор автора
+     * @return Optional с найденным автором или пустой Optional, если автор не найден
+     */
     public Optional<Author> getAuthorsById(Long id) {
         return authorRepository.findById(id);
     }
 
-    //Сохранение автора
+    /**
+     * Сохраняет нового автора в базе данных.
+     *
+     * @param author объект автора
+     * @return сохранённый автор
+     */
     public Author saveAuthor(Author author) {
         return authorRepository.save(author);
     }
 
-    // обновляем уже существующего автора
+    /**
+     * Обновляет данные существующего автора.
+     *
+     * @param id            идентификатор автора
+     * @param authorDetails объект с обновлёнными данными
+     * @return обновлённый автор
+     * @throws RuntimeException если автор с указанным ID не найден
+     */
     public Author updateAuthor(Long id, Author authorDetails) {
         Author author = authorRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Альбом не найден с ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Автор не найден с ID: " + id));
 
         author.setName(authorDetails.getName());
         author.setBirthDate(authorDetails.getBirthDate());
@@ -47,14 +81,21 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    //удаляем автора
+    /**
+     * Удаляет автора по идентификатору.
+     *
+     * @param id идентификатор автора
+     */
     public void deleteAuthor(Long id) {
         authorRepository.deleteById(id);
     }
 
-    //получить количество авторов
+    /**
+     * Возвращает количество авторов в базе данных.
+     *
+     * @return число авторов
+     */
     public long getAuthorCount() {
         return authorRepository.count();
     }
-
 }

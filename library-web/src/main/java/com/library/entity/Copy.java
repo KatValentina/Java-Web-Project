@@ -1,12 +1,15 @@
 package com.library.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+/**
+ * Сущность, представляющая экземпляр (копию) литературного произведения.
+ * Каждая копия имеет уникальный инвентарный номер, статус
+ * и принадлежит конкретному произведению.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,22 +18,41 @@ import lombok.*;
 @Builder
 @Table(name = "copy")
 public class Copy {
+
+    /**
+     * Уникальный идентификатор копии.
+     * Генерируется автоматически базой данных.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Инвентарный номер экземпляра.
+     * Требования:
+     * - не пустой;
+     * - длина не более 6 символов;
+     * - должен быть уникальным в базе данных.
+     */
     @NotBlank(message = "Инвентарный номер не может быть пустым")
-    @Size(max=6, message = "Инвентарный номер не должен содержать больше 6 символов")
+    @Size(max = 6, message = "Инвентарный номер не должен содержать больше 6 символов")
     @Column(name = "inventory_number", nullable = false, unique = true)
     private String inventoryNumber;
 
+    /**
+     * Статус экземпляра.
+     * По умолчанию — «Доступно».
+     * Может принимать значения, определённые в CopyService.
+     */
     @Column(nullable = false)
     @Builder.Default
     private String status = "Доступно";
 
-    // произведения - копии
+    /**
+     * Произведение, к которому относится данная копия.
+     * Связь многие‑к‑одному.
+     */
     @ManyToOne
     @JoinColumn(name = "oeuvre_id", nullable = false)
     private Oeuvre oeuvre;
-
 }

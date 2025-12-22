@@ -3,6 +3,7 @@ package com.library.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
@@ -22,8 +23,12 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)//ключ будет генерироваться автоматически базой данных.
     private Long id;
 
-    @NotBlank(message = "Имя исполнителя не может быть пустым")
+    @NotBlank(message = "Имя автора не может быть пустым")
     @Size(min = 4,max=150, message = "Имя автора должно содержать от 4 до 150 символов")
+    @Pattern(
+            regexp = "^[A-Za-zА-Яа-яЁё]+(?: [A-Za-zА-Яа-яЁё]+)*$",
+            message = "Имя может содержать только буквы и один пробел между словами"
+    )
     @Column(name = "name", nullable = false, length = 150)
     private String name;
 

@@ -53,7 +53,7 @@ public class AuthorService {
     }
 
     //получить количество авторов
-    public long getAlbumCount() {
+    public long getAuthorCount() {
         return authorRepository.count();
     }
 

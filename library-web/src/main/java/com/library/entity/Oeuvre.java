@@ -14,7 +14,6 @@ import lombok.*;
 @Entity
 @Builder
 @Table(name = "oeuvre")
-//@ToString(exclude = {"author", "copies"})
 public class Oeuvre {
 
     @Id
@@ -41,6 +40,5 @@ public class Oeuvre {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
-
 
 }

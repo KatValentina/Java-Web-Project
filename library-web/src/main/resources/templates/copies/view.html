@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Просмотр копии</title>
+</head>
+<body>
+
+<h2>Информация о копии</h2>
+
+<p>ID: <span th:text="${copy.id}"></span></p>
+<p>Произведение: <span th:text="${copy.oeuvre.title}"></span></p>
+<p>Инвентарный номер: <span th:text="${copy.inventoryNumber}"></span></p>
+<p>Статус: <span th:text="${copy.status}"></span></p>
+
+<a href="/copies">Назад</a>
+
+
+</body>
+</html>

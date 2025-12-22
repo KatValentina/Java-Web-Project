@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${action == 'edit'} ? 'Редактировать копию' : 'Добавить копию'">Форма автора</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <h1 th:text="${action == 'edit'} ? 'Редактировать копию' : 'Добавить новую копию'">Форма автора</h1>
+        <p class="subtitle">Заполните информацию об копии произведении</p>
+    </header>
+
+    <div class="form-container">
+
+        <!-- Блок ошибки -->
+        <div th:if="${errorMessage}" class="error-box">
+            <p th:text="${errorMessage}"></p>
+        </div> <form th:action="${action == 'edit'} ? @{/copies/update/{id}(id=${copy.id})}
+         : @{/copies}"
+                     th:object="${copy}"
+                     method="post"
+                     class="copy-form">
+
+            <!--произведение -->
+            <div class="form-group">
+                <label for="oeuvre">Произведение <span class="required">*</span></label>
+                <select id="oeuvre" th:field="*{oeuvre.id}" required>
+                    <option value="">Выберете произведение</option>
+                    <option th:each="o : ${oeuvres}"
+                            th:value="${o.id}"
+                            th:text="${o.title}">
+                    </option>
+                </select>
+            </div>
+
+            <!--Инвентарный номер -->
+            <div class="form-group">
+                <label for="inventoryNumber">Инвентарный номер <span class="required">*</span></label>
+                <input type="text"
+                       id="inventoryNumber"
+                       th:field="*{inventoryNumber}"
+                       th:classappend="${#fields.hasErrors('inventoryNumber')} ? 'error' : ''"
+                       maxlength="6"
+                       required>
+                <span class="error-message"
+                      th:if="${#fields.hasErrors('inventoryNumber')}"
+                      th:errors="*{inventoryNumber}"></span>
+            </div>
+
+            <!--Статус книги-->
+            <div class="form-group">
+                <label>Статус:</label>
+                <select th:field="*{status}">
+                    <option th:each="s : ${statuses}"
+                            th:value="${s}"
+                            th:text="${s}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-large">
+                    <span th:text="${action == 'edit'} ? 'Сохранить изменения' : 'Добавить копию'"></span>
+                </button>
+
+                <a th:href="@{/copies}" class="btn btn-secondary btn-large">Отмена</a>
+            </div>
+
+            <p class="form-note"><span class="required">*</span> Обязательные поля</p>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

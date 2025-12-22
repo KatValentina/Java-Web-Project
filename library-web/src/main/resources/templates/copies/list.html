@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список копий</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <h1>Список копий</h1>
+        <p th:text="'Всего копий: ' + ${copyCount}"></p>
+        <a th:href="@{/copies/new}" class="btn btn-primary">Добавить копию</a>
+    </header>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Произведение</th>
+            <th>Инвентарный номер</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="copy : ${copies}">
+            <td th:text="${copy.id}"></td>
+            <td th:text="${copy.oeuvre.title}"></td>
+            <td th:text="${copy.inventoryNumber}"></td>
+            <td th:text="${copy.status}"></td>
+
+            <td>
+                <a th:href="@{'/copies/view/' + ${copy.id}}">Просмотр</a> |
+                <a th:href="@{'/copies/edit/' + ${copy.id}}">Редактировать</a> |
+                <a th:href="@{'/copies/delete/' + ${copy.id}}"
+                   onclick="return confirm('Удалить копию?')">Удалить</a>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+
+</html>
+

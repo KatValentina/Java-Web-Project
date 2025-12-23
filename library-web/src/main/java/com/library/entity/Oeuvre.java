@@ -68,6 +68,5 @@ public class Oeuvre {
      * Загрузка ленивой стратегией для оптимизации производительности.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    @JoinColumn(name = "author_id") private Author author;
 }

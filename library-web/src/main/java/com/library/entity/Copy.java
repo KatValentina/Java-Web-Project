@@ -31,11 +31,12 @@ public class Copy {
      * Инвентарный номер экземпляра.
      * Требования:
      * - не пустой;
-     * - длина не более 6 символов;
+     * - длина строго 6 символов;
      * - должен быть уникальным в базе данных.
      */
     @NotBlank(message = "Инвентарный номер не может быть пустым")
     @Size(max = 6, message = "Инвентарный номер не должен содержать больше 6 символов")
+    @Size(min = 5, message = "Инвентарный номер должен содержать 6 символов")
     @Column(name = "inventory_number", nullable = false, unique = true)
     private String inventoryNumber;
 

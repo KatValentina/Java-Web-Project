@@ -78,9 +78,8 @@ public class Author {
      * Связь один-ко-многим.
      * orphanRemoval = true — удаляет произведения, если они больше не связаны с автором.
      */
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Oeuvre> oeuvres = new ArrayList<>();
+    @OneToMany( mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true )
+    private List<Oeuvre> oeuvres;
 
     /**
      * Добавляет произведение автору и устанавливает связь в обе стороны.

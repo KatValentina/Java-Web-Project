@@ -86,11 +86,14 @@ public class AuthorService {
      *
      * @param id идентификатор автора
      */
-    @Transactional public void deleteAuthor(Long id) {
+    @Transactional
+    public void deleteAuthor(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Автор не найден"));
+
         authorRepository.delete(author);
     }
+
 
     /**
      * Возвращает количество авторов в базе данных.

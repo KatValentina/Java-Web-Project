@@ -50,10 +50,9 @@ public class Copy {
     private String status = "Доступно";
 
     /**
-     * Произведение, к которому относится данная копия.
-     * Связь многие‑к‑одному.
+     *  Произведение, к которому относится экземпляр
      */
-    @ManyToOne
-    @JoinColumn(name = "oeuvre_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "oeuvre_id")
     private Oeuvre oeuvre;
 }

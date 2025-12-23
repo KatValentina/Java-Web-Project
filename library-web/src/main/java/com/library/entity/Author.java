@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,7 @@ public class Author {
      * Должна быть в прошлом.
      */
     @Past(message = "Дата рождения должна быть в прошлом")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
@@ -78,14 +81,15 @@ public class Author {
      * Связь один-ко-многим.
      * orphanRemoval = true — удаляет произведения, если они больше не связаны с автором.
      */
-    @OneToMany( mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany(
+            mappedBy = "author",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<Oeuvre> oeuvres;
 
-    /**
-     * Добавляет произведение автору и устанавливает связь в обе стороны.
-     *
-     * @param oeuvre произведение, которое нужно добавить
-     */
+    /** * Утилитный метод для добавления произведения к автору.
+     * * * @param oeuvre произведение */
     public void addOeuvre(Oeuvre oeuvre) {
         oeuvres.add(oeuvre);
         oeuvre.setAuthor(this);

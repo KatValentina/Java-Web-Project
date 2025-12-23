@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * Сущность, представляющая литературное произведение.
  * Содержит основную информацию о произведении, включая название,
@@ -63,10 +65,36 @@ public class Oeuvre {
     private Integer publishedYear;
 
     /**
-     * Автор произведения.
-     * Связь многие‑к‑одному.
-     * Загрузка ленивой стратегией для оптимизации производительности.
+     * * Автор произведения.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id") private Author author;
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    /**
+     * Список экземпляров произведения.
+     * При удалении произведения все его экземпляры также удаляются.
+     */
+    @OneToMany( mappedBy = "oeuvre", cascade = CascadeType.ALL, orphanRemoval = true )
+    private List<Copy> copies;
+
+    /**
+     * Утилитный метод для добавления экземпляра произведения.
+     *
+     * @param copy экземпляр произведения
+     */
+    public void addCopy(Copy copy) {
+        copies.add(copy);
+        copy.setOeuvre(this);
+    }
+
+    /**
+     * Утилитный метод для удаления экземпляра произведения.
+     *  @param copy экземпляр произведения
+     */
+    public void removeCopy(Copy copy) {
+        copies.remove(copy);
+        copy.setOeuvre(null);
+    }
+
 }
